@@ -51,10 +51,14 @@ vectorizer = open("./resources/models/countvect.pkl", "rb")
 # loading your vectorizer from the pkl file
 vect = joblib.load(vectorizer)
 
-# Similarity
-similarity = open("./resources/models/similarity.pkl", "rb")
-# loading your vectorizer from the pkl file
-sim = joblib.load(similarity)
+
+with open("./resources/models/similarity.pkl", "rb") as f:
+    sim = pickle.load(f)
+
+# # Similarity
+# similarity = open("./resources/models/similarity.pkl", "rb")
+# # loading your vectorizer from the pkl file
+# sim = joblib.load(similarity)
 
 # return (vect, sim)
 
