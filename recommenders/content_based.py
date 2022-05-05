@@ -43,30 +43,30 @@ ratings = pd.read_csv('resources/data/ratings.csv')
 movies.dropna(inplace=True)
 
 
-@st.cache(suppress_st_warning=True)
-def expensive_computation():
+# @st.cache(suppress_st_warning=True)
+# def expensive_computation():
 
-    # Vectorizer
-    vectorizer = open("./resources/models/countvect.pkl", "rb")
-    # loading your vectorizer from the pkl file
-    vect = joblib.load(vectorizer)
+#     # Vectorizer
+#     vectorizer = open("./resources/models/countvect.pkl", "rb")
+#     # loading your vectorizer from the pkl file
+#     vect = joblib.load(vectorizer)
 
-    with open("./resources/models/similarity.pkl", "rb") as f:
-        try:
-            sim = joblib.load(f)
-        except EOFError:
-            return (vect, sim)
-
-
-# # Similarity
-# similarity = open("./resources/models/similarity.pkl", "rb")
-# # loading your vectorizer from the pkl file
-# sim = joblib.load(similarity)
-
-    return (vect, sim)
+#     with open("./resources/models/similarity.pkl", "rb") as f:
+#         try:
+#             sim = joblib.load(f)
+#         except EOFError:
+#             return (vect, sim)
 
 
-vect, sim = expensive_computation()
+# # # Similarity
+# # similarity = open("./resources/models/similarity.pkl", "rb")
+# # # loading your vectorizer from the pkl file
+# # sim = joblib.load(similarity)
+
+#     return (vect, sim)
+
+
+# vect, sim = expensive_computation()
 
 # movies, ratings = expensive_computation()
 
@@ -116,9 +116,9 @@ def content_model(movie_list, top_n=10):
     recommended_movies = []
     data = data_preprocessing(27000)
     # Instantiating and generating the count matrix
-    # count_vec = CountVectorizer()
-    # count_matrix = count_vec.fit_transform(data['keyWords'])
-    count_matrix = vect.transform(data['keyWords'])
+    count_vec = CountVectorizer()
+    count_matrix = count_vec.fit_transform(data['keyWords'])
+    # count_matrix = vect.transform(data['keyWords'])
 
     # Serialise
 
@@ -127,7 +127,7 @@ def content_model(movie_list, top_n=10):
     #     pickle.dump(count_vec, file)
 
     indices = pd.Series(data['title'])
-    # cosine_sim = cosine_similarity(count_matrix, count_matrix)
+    cosine_sim = cosine_similarity(count_matrix, count_matrix)
 
     # model_save_path = "./resources/models/similarity.pkl"
     # with open(model_save_path, 'wb') as file:
@@ -138,13 +138,13 @@ def content_model(movie_list, top_n=10):
     idx_2 = indices[indices == movie_list[1]].index[0]
     idx_3 = indices[indices == movie_list[2]].index[0]
     # Creating a Series with the similarity scores in descending order
-    # rank_1 = cosine_sim[idx_1]
-    # rank_2 = cosine_sim[idx_2]
-    # rank_3 = cosine_sim[idx_3]
+    rank_1 = cosine_sim[idx_1]
+    rank_2 = cosine_sim[idx_2]
+    rank_3 = cosine_sim[idx_3]
 
-    rank_1 = sim[idx_1]
-    rank_2 = sim[idx_2]
-    rank_3 = sim[idx_3]
+    # rank_1 = sim[idx_1]
+    # rank_2 = sim[idx_2]
+    # rank_3 = sim[idx_3]
     # Calculating the scores
     score_series_1 = pd.Series(rank_1).sort_values(ascending=False)
     score_series_2 = pd.Series(rank_2).sort_values(ascending=False)
