@@ -33,11 +33,23 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
+import streamlit as st
 
 # Importing data
-movies = pd.read_csv('resources/data/movies.csv', sep=',')
-ratings = pd.read_csv('resources/data/ratings.csv')
-movies.dropna(inplace=True)
+# movies = pd.read_csv('resources/data/movies.csv', sep=',')
+# ratings = pd.read_csv('resources/data/ratings.csv')
+# movies.dropna(inplace=True)
+
+
+@st.cache(suppress_st_warning=True)  # 👈 Changed this
+def expensive_computation():
+    movies = pd.read_csv('resources/data/movies.csv', sep=',')
+    ratings_df = pd.read_csv('resources/data/ratings.csv')
+    movies.dropna(inplace=True)
+    return (movies, ratings_df)
+
+
+movies, ratings = expensive_computation()
 
 
 def data_preprocessing(subset_size):
