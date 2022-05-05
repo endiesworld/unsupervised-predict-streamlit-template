@@ -43,7 +43,7 @@ ratings = pd.read_csv('resources/data/ratings.csv')
 movies.dropna(inplace=True)
 
 
-@st.cache(suppress_st_warning=True)  # 👈 Changed this
+@st.cache(suppress_st_warning=True)
 def expensive_computation():
 
     # Vectorizer
@@ -56,10 +56,6 @@ def expensive_computation():
     # loading your vectorizer from the pkl file
     sim = joblib.load(similarity)
 
-#     print('Finished fetching data')
-#     movies = pd.read_csv('resources/data/movies.csv', sep=',')
-#     ratings_df = pd.read_csv('resources/data/ratings.csv')
-#     movies.dropna(inplace=True)
     return (vect, sim)
 
 
