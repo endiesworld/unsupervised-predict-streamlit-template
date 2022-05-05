@@ -55,7 +55,7 @@ def expensive_computation():
         try:
             sim = joblib.load(f)
         except EOFError:
-            print("An exception occurred")
+            return (vect, sim)
 
 
 # # Similarity
