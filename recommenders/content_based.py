@@ -43,6 +43,7 @@ import streamlit as st
 
 @st.cache(suppress_st_warning=True)  # 👈 Changed this
 def expensive_computation():
+    print('Finished fetching data')
     movies = pd.read_csv('resources/data/movies.csv', sep=',')
     ratings_df = pd.read_csv('resources/data/ratings.csv')
     movies.dropna(inplace=True)
@@ -95,7 +96,7 @@ def content_model(movie_list, top_n=10):
     """
     # Initializing the empty list of recommended movies
     recommended_movies = []
-    data = data_preprocessing(27000)
+    data = data_preprocessing(2700)
     # Instantiating and generating the count matrix
     count_vec = CountVectorizer()
     count_matrix = count_vec.fit_transform(data['keyWords'])
