@@ -34,23 +34,38 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 import streamlit as st
+import pickle
+import joblib
 
 # Importing data
-# movies = pd.read_csv('resources/data/movies.csv', sep=',')
-# ratings = pd.read_csv('resources/data/ratings.csv')
-# movies.dropna(inplace=True)
+movies = pd.read_csv('resources/data/movies.csv', sep=',')
+ratings = pd.read_csv('resources/data/ratings.csv')
+movies.dropna(inplace=True)
 
 
 @st.cache(suppress_st_warning=True)  # 👈 Changed this
 def expensive_computation():
-    print('Finished fetching data')
-    movies = pd.read_csv('resources/data/movies.csv', sep=',')
-    ratings_df = pd.read_csv('resources/data/ratings.csv')
-    movies.dropna(inplace=True)
-    return (movies, ratings_df)
+
+    # Vectorizer
+    vectorizer = open("./resources/models/countvect.pkl", "rb")
+    # loading your vectorizer from the pkl file
+    vect = joblib.load(vectorizer)
+
+    # Similarity
+    similarity = open("./resources/models/similarity.pkl", "rb")
+    # loading your vectorizer from the pkl file
+    sim = joblib.load(similarity)
+
+#     print('Finished fetching data')
+#     movies = pd.read_csv('resources/data/movies.csv', sep=',')
+#     ratings_df = pd.read_csv('resources/data/ratings.csv')
+#     movies.dropna(inplace=True)
+    return (vect, sim)
 
 
-movies, ratings = expensive_computation()
+vect, sim = expensive_computation()
+
+# movies, ratings = expensive_computation()
 
 
 def data_preprocessing(subset_size):
@@ -96,26 +111,43 @@ def content_model(movie_list, top_n=10):
     """
     # Initializing the empty list of recommended movies
     recommended_movies = []
-    data = data_preprocessing(2700)
+    data = data_preprocessing(27000)
     # Instantiating and generating the count matrix
-    count_vec = CountVectorizer()
-    count_matrix = count_vec.fit_transform(data['keyWords'])
+    # count_vec = CountVectorizer()
+    # count_matrix = count_vec.fit_transform(data['keyWords'])
+    count_matrix = vect.transform(data['keyWords'])
+
+    # Serialise
+
+    # model_save_path = "./resources/models/countvect.pkl"
+    # with open(model_save_path, 'wb') as file:
+    #     pickle.dump(count_vec, file)
+
     indices = pd.Series(data['title'])
-    cosine_sim = cosine_similarity(count_matrix, count_matrix)
+    # cosine_sim = cosine_similarity(count_matrix, count_matrix)
+
+    # model_save_path = "./resources/models/similarity.pkl"
+    # with open(model_save_path, 'wb') as file:
+    #     pickle.dump(cosine_sim, file)
+
     # Getting the index of the movie that matches the title
     idx_1 = indices[indices == movie_list[0]].index[0]
     idx_2 = indices[indices == movie_list[1]].index[0]
     idx_3 = indices[indices == movie_list[2]].index[0]
     # Creating a Series with the similarity scores in descending order
-    rank_1 = cosine_sim[idx_1]
-    rank_2 = cosine_sim[idx_2]
-    rank_3 = cosine_sim[idx_3]
+    # rank_1 = cosine_sim[idx_1]
+    # rank_2 = cosine_sim[idx_2]
+    # rank_3 = cosine_sim[idx_3]
+
+    rank_1 = sim[idx_1]
+    rank_2 = sim[idx_2]
+    rank_3 = sim[idx_3]
     # Calculating the scores
     score_series_1 = pd.Series(rank_1).sort_values(ascending=False)
     score_series_2 = pd.Series(rank_2).sort_values(ascending=False)
     score_series_3 = pd.Series(rank_3).sort_values(ascending=False)
     # Getting the indexes of the 10 most similar movies
-    listings = score_series_1.append(score_series_1).append(
+    listings = score_series_1.append(score_series_2).append(
         score_series_3).sort_values(ascending=False)
 
     # Store movie names
