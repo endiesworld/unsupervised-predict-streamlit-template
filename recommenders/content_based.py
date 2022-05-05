@@ -53,7 +53,7 @@ vect = joblib.load(vectorizer)
 
 
 with open("./resources/models/similarity.pkl", "rb") as f:
-    sim = pickle.load(f)
+    sim = joblib.load(f)
 
 # # Similarity
 # similarity = open("./resources/models/similarity.pkl", "rb")
