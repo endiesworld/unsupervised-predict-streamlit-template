@@ -52,7 +52,11 @@ def expensive_computation():
     vect = joblib.load(vectorizer)
 
     with open("./resources/models/similarity.pkl", "rb") as f:
-        sim = joblib.load(f)
+        try:
+            sim = joblib.load(f)
+        except EOFError:
+            print("An exception occurred")
+
 
 # # Similarity
 # similarity = open("./resources/models/similarity.pkl", "rb")
