@@ -43,23 +43,23 @@ ratings = pd.read_csv('resources/data/ratings.csv')
 movies.dropna(inplace=True)
 
 
-@st.cache(suppress_st_warning=True)
-def expensive_computation():
+# @st.cache(suppress_st_warning=True)
+# def expensive_computation():
 
-    # Vectorizer
-    vectorizer = open("./resources/models/countvect.pkl", "rb")
-    # loading your vectorizer from the pkl file
-    vect = joblib.load(vectorizer)
+# Vectorizer
+vectorizer = open("./resources/models/countvect.pkl", "rb")
+# loading your vectorizer from the pkl file
+vect = joblib.load(vectorizer)
 
-    # Similarity
-    similarity = open("./resources/models/similarity.pkl", "rb")
-    # loading your vectorizer from the pkl file
-    sim = joblib.load(similarity)
+# Similarity
+similarity = open("./resources/models/similarity.pkl", "rb")
+# loading your vectorizer from the pkl file
+sim = joblib.load(similarity)
 
-    return (vect, sim)
+# return (vect, sim)
 
 
-vect, sim = expensive_computation()
+# vect, sim = expensive_computation()
 
 # movies, ratings = expensive_computation()
 
